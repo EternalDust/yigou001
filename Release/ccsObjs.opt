@@ -1,0 +1,5 @@
+"./main.obj"
+"./Hardware/ADC.obj"
+"./Hardware/Serial.obj"
+"../lnk_msp430g2553.cmd"
+-llibc.a
