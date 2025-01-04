@@ -6,7 +6,10 @@
 #include <stdint.h>
 
 int flag = 0;
-uint16_t adcbuff[50] = {0};
+uint16_t ring_buffer[BUFFER_SIZE];
+uint16_t write_index = 0;  
+uint16_t read_index = 0;   
+uint16_t adcbuff[SingleTrig_SIZE] = {0};
 
 
 void ADC_Init(void)
@@ -36,11 +39,11 @@ void ADC_Init(void)
       /*中断使能*/
       ADC10CTL0 |= ADC10IE;
       /*DTC传输模式*/
-      ADC10DTC0 |= ADC10CT;
+      //ADC10DTC0 |= ADC10CT;
       /*传输次数*/
-      ADC10DTC1 = 50;
+      //ADC10DTC1 = 50;
       /*起始地址*/
-      ADC10SA = (uint16_t)(adcbuff);
+      //ADC10SA = (uint16_t)(adcbuff);
       /*开启ADC*/
       ADC10CTL0 |= ADC10ON;
       /*允许转换*/
@@ -52,9 +55,9 @@ void ADC_Init(void)
 void TimerA0_Init(void)
 {
     /*设置时钟源为SMCLK*/
-    TA0CTL |= TASSEL1;
+    TA0CTL |= TASSEL_2;
     /*设置工作模式为Up&Down*/
-    TA0CTL |= MC0|MC1;
+    TA0CTL |= =MC_1;
     /*设置TA1CCR0为0x00FF*/
     TA0CCR0 = 0x00FF;
     /*设置TA1CCR1为0x00FF*/
@@ -69,21 +72,7 @@ void TimerA0_Init(void)
     P1DIR |= BIT6;
 }
 
-void TimerA1_Init(void)
-{
-    /*设置P1.6为输出*/
-    P1DIR |= BIT6;
 
-    /*设置时钟源为SMCLK*/
-    TA1CTL |= TASSEL_2;
-    /*设置工作模式为Up Mode*/
-    TA1CTL |= MC_1;
-    /*设置定时间隔*/
-    TA1CCR0 = 99999;// 50ms 1MHz 1/1MHz 1ns 50ms / 1ns = 50000 50000 - 1 = 49999
-
-    /*开启TAIFG中断*/
-    TA1CTL &= ~TAIE;
-}
 
 uint16_t ADC_GetValue(void)
 {
@@ -94,7 +83,6 @@ uint16_t ADC_GetValue(void)
 
 
 
-
 void ADCConvert_Start(void)
 {
     ADC10CTL0 |= ADC10SC|ENC;
@@ -102,30 +90,37 @@ void ADCConvert_Start(void)
 }
 
 
-/*
-#pragma vector = TIMER1_A1_VECTOR
-__interrupt void Time_Tick(void)
+//电压连续触发模式
+//ADC配置与本文件保持一致，同时需要TimerA0_Init();
+//需要放在while(1)循环中
+void ADC_AutoTrig(void)
 {
-    switch(TA1IV)
-        {
-        case 0x02:
-            break;
-        case 0x04:
-            break;
-        case 0x0A:
-            flag = 1;
-            break;
-        default:
-            break;
-        }
-
+    if (ADC10CTL0 & ADC10IFG) 
+    {
+        ring_buffer[write_index] = ADC10MEM;
+        write_index = (write_index + 1) % BUFFER_SIZE; 
+        ADC10CTL0 &= ~ADC10IFG;
+    }
+    while (read_index != write_index) 
+    {
+        uint16_t data = ring_buffer[read_index];
+        read_index = (read_index + 1) % BUFFER_SIZE; 
+        Serial_printf("%d, %d\n", data, (data * 2500L) / 1023); 
+        __delay_cycles(30000);
+    }
 }
-*/
 
 
-#pragma vector=ADC10_VECTOR
-__interrupt void ADC10_ISR(void) {
-    flag = 1;
-    __no_operation();
+
+//电压单次触发模式
+//ADC配置需要打开DTC模式，将注释去掉即可，同样连续采集将注释加上即可
+void ADC_SingleTrig(void)
+{
+    for (int i = 0; i < SingleTrig_SIZE; i++)
+    {
+        Serial_printf("%d, %d\n", *(adcbuff+i), (*(adcbuff+i) * 2500L) / 1023);
+    }
 }
+
+
 

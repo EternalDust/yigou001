@@ -102,13 +102,5 @@ void Serial_printf(char *format, ...)
 
 
 
-#pragma vector=USCIAB0RX_VECTOR
-__interrupt void USCI0RX_ISR(void)
-{
-    if(IFG2 & UCA0RXIFG)
-    {
 
-        IFG2 &= ~UCA0RXIFG;
-    }
-}
 

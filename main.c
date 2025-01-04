@@ -5,9 +5,12 @@
 #include "Serial.h"
 #include "ADCinit.h"
 #include <stdint.h>
-extern uint8_t combuff[20]={0};//长度20的数组用于保存串口接受的数据
-extern uint8_t iscomend=0;//bool变量
-extern  uint16_t adcbuff[100];
+
+
+uint8_t combuff[20]={0};//长度20的数组用于保存串口接受的数据
+uint8_t iscomend=0;//bool变量
+
+
 #pragma vector =USCIAB0RX_VECTOR;//这个中断看.h
 __interrupt void UART_Receive_ISR(void)
 {
@@ -29,26 +32,27 @@ void Execute (uint8_t *combuff)
     //单单a0
     if(combuff[0]=='0')
     {
-        Serial_SendString("A0单通道单次50次\n");
+        
        
     }
     else if(combuff[0]=='1')
     {
-           Serial_SendString("单通道单次温度50次\n");
+         
         
        }
     else if(combuff[0]=='2')
     {
-           Serial_SendString("单通道连续A0\n");
+           
           
        }
     else if(combuff[0]=='3')
     {
-           Serial_SendString("单通道连续温度\n");
+           
          
        }
-    else   Serial_SendString("非法输入\n");
+    else   
 }
+
 
 int main(void)
 {
