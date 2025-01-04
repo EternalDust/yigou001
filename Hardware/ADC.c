@@ -19,7 +19,7 @@ void ADC_Init(void)
       /*ADC 不分频*/
       ADC10CTL1 |= ADC10DIV_0;
       /*ADC触发源使用TimerA_OUT1*/
-      ADC10CTL1 |= SHS0;
+      ADC10CTL1 |= SHS_1;
       /*单通道连续转换模式*/
       ADC10CTL1 |= CONSEQ_2;
       /*设置ADC基准源*/
@@ -68,8 +68,8 @@ void TimerA0_Init(void)
     /*设置比较输出模式*/
     TA0CCTL1 |= OUTMOD_6;
     /*设置IO复用*/
-    P1SEL |= BIT6;
-    P1DIR |= BIT6;
+    P1SEL |= BIT2;
+    P1DIR |= BIT2;
 }
 
 
