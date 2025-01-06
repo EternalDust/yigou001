@@ -4,6 +4,8 @@
 
 #include <msp430.h>
 #include <stdint.h>
+#include "ADC.h"
+#include "Serial.h"
 
 int flag = 0;
 uint16_t ring_buffer[BUFFER_SIZE];
@@ -57,7 +59,7 @@ void TimerA0_Init(void)
     /*设置时钟源为SMCLK*/
     TA0CTL |= TASSEL_2;
     /*设置工作模式为Up&Down*/
-    TA0CTL |= =MC_1;
+    TA0CTL |= MC_1;
     /*设置TA1CCR0为0x00FF*/
     TA0CCR0 = 0x00FF;
     /*设置TA1CCR1为0x00FF*/
