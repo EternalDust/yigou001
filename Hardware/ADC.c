@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include "ADC.h"
 #include "Serial.h"
+#include "Data.h"
 
 int flag = 0;
 uint16_t ring_buffer[BUFFER_SIZE];
@@ -106,8 +107,12 @@ void ADC_AutoTrig(void)
     while (read_index != write_index) 
     {
         uint16_t data = ring_buffer[read_index];
+        uint16_t ppval = cal_ppvalue(ring_buffer);
+        uint16_t ave = average_array(ring_buffer);
+        uint16_t f = frequency(ring_buffer,BUFFER_SIZE);
+
         read_index = (read_index + 1) % BUFFER_SIZE; 
-        Serial_printf("%d, %d\n", data, (data * 2500L) / 1023); 
+        Serial_printf("%d, %d, %d, %d, %d\n", data, (data * 2500L) / 1023, (ppval/* * 2500L*/)/* / 1023*/, (ave/* * 2500L*/)/* / 1023*/, f);
         __delay_cycles(30000);
     }
 }
@@ -120,7 +125,9 @@ void ADC_SingleTrig(void)
 {
     for (int i = 0; i < SingleTrig_SIZE; i++)
     {
-        Serial_printf("%d, %d\n", *(adcbuff+i), (*(adcbuff+i) * 2500L) / 1023);
+        uint16_t ppval = cal_ppvalue(adcbuff);
+        uint16_t ave = average_array(adcbuff);
+        Serial_printf("%d, %d, %d, %d,\n", *(adcbuff+i), (*(adcbuff+i) * 2500L) / 1023, (ppval/* * 2500L*/)/* / 1023*/, (ave/* * 2500L*/)/* / 1023*/);
     }
 }
 
