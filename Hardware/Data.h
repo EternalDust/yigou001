@@ -6,6 +6,8 @@
 
 //extern uint16_t advanced_data[SingleTrig_SIZE];
 //void mean_filter();
+
+
 int frequency(const uint16_t* array, int Length);
 int cal_ppvalue(const uint16_t* array);
 int average_array(const uint16_t* array);
