@@ -107,12 +107,13 @@ void ADC_AutoTrig(void)
     while (read_index != write_index) 
     {
         uint16_t data = ring_buffer[read_index];
-        uint16_t ppval = cal_ppvalue(ring_buffer);
-        uint16_t ave = average_array(ring_buffer);
-        uint16_t f = frequency(ring_buffer,BUFFER_SIZE);
+        uint16_t ppval = cal_ppvalue(ring_buffer);//峰峰值
+        uint16_t ave = average_array(ring_buffer);//均值
+        uint16_t f = frequency(ring_buffer,BUFFER_SIZE);//频率
 
         read_index = (read_index + 1) % BUFFER_SIZE; 
         Serial_printf("%d, %d, %d, %d, %d\n", data, (data * 2500L) / 1023, (ppval/* * 2500L*/)/* / 1023*/, (ave/* * 2500L*/)/* / 1023*/, f);
+        //加注释是因为不确定是要原始数据还是转换后的数据
         __delay_cycles(30000);
     }
 }
@@ -125,8 +126,8 @@ void ADC_SingleTrig(void)
 {
     for (int i = 0; i < SingleTrig_SIZE; i++)
     {
-        uint16_t ppval = cal_ppvalue(adcbuff);
-        uint16_t ave = average_array(adcbuff);
+        uint16_t ppval = cal_ppvalue(adcbuff);//峰峰值
+        uint16_t ave = average_array(adcbuff);//均值
         Serial_printf("%d, %d, %d, %d,\n", *(adcbuff+i), (*(adcbuff+i) * 2500L) / 1023, (ppval/* * 2500L*/)/* / 1023*/, (ave/* * 2500L*/)/* / 1023*/);
     }
 }

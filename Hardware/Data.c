@@ -14,7 +14,7 @@ uint16_t advanced_data[SingleTrig_SIZE];
 int cal_ppvalue(const uint16_t* array){
     int max = array[0];
     int min = array[0];
-
+    //找到最大值最小值
     for(int i = 0;i < BUFFER_SIZE; ++i)  if(max < array[i])    max = array[i];
     for(int i = 0;i < BUFFER_SIZE; ++i)  if(min > array[i])    min = array[i];
 
