@@ -9,8 +9,8 @@
 
 
 int frequency(const uint16_t* array, int Length);
-int cal_ppvalue(const uint16_t* array);
-int average_array(const uint16_t* array);
+int cal_ppvalue(const uint16_t* array, int Length);
+int average_array(const uint16_t* array, int Length);
 int frequency_justmax(const uint16_t* array, int Length);
 
 #endif
