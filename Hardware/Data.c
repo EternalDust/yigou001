@@ -11,19 +11,19 @@ uint16_t advanced_data[SingleTrig_SIZE];
 //    return sizeof(array) / sizeof(array[0]);
 //}
 
-int cal_ppvalue(const uint16_t* array){
+int cal_ppvalue(const uint16_t* array, int Length){
     int max = array[0];
     int min = array[0];
     //找到最大值最小值
-    for(int i = 0;i < BUFFER_SIZE; ++i)  if(max < array[i])    max = array[i];
-    for(int i = 0;i < BUFFER_SIZE; ++i)  if(min > array[i])    min = array[i];
+    for(int i = 0;i < Length; ++i)  if(max < array[i])    max = array[i];
+    for(int i = 0;i < Length; ++i)  if(min > array[i])    min = array[i];
 
     return max - min;
 }
 
-int average_array(const uint16_t* array){
+int average_array(const uint16_t* array, int Length){
     int sum = 0;
-    for(int i = 0; i < BUFFER_SIZE; ++ i)    sum += array[i];
+    for(int i = 0; i < Length; ++ i)    sum += array[i];
 
     return sum / BUFFER_SIZE;
 }
